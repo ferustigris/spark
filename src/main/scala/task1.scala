@@ -1,13 +1,19 @@
 import org.apache.spark.{SparkContext, SparkConf}
+import scala.util.matching.Regex
+import scala.util.matching.Regex.MatchIterator
 
 object task1 {
+  def getRecord(iter: MatchIterator): Tuple2[String, Int] = {
+    (iter.group(0), iter.group(7).toInt)
+  }
   def main (args: Array[String]) {
     val conf = new SparkConf().setAppName("task1").setMaster("local")
     val sc = new SparkContext(conf);
 
     // put some data in an RDD
     val f = sc.textFile("000000")
-    val hz = f.flatMap(line => Array(line.split(" ")))
+    val hz = f.map(line => getRecord("([^\"]\\S*|\".+?\")\\s*".r.findAllIn(line)))
+
     val numbersRDD = sc.parallelize(numbers, 4)
     println("Print each element of the original RDD")
     numbersRDD.foreach(println)
