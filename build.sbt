@@ -14,5 +14,6 @@ libraryDependencies += "org.apache.spark" %% "spark-sql" % "1.5.0"
 
 libraryDependencies += "org.apache.spark" %% "spark-hive" % "1.5.0"
 
+libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
 
-
+libraryDependencies += "junit" % "junit" % "4.12" % "test"
