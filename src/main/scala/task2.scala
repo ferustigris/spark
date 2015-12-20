@@ -44,14 +44,21 @@ object task2 {
     // How many stages in jobs where instanced for this query?
     println("The total number of flights served in Jun 2007 by NYC")
     val a = sc.textFile("airports.csv").map(line => line.replace("\"", "").split(","))
-    val NYCount = f.flatMap(line => {
+    val fa = f.flatMap(line => {
       List(
         (line(16), line),
         (line(17), line)
       )
-    }).join(a.filter(line => line(3).equals("NY")).map(line => (line(0), line)))
+    })
+    val NYCount = fa.join(a.filter(line => line(3).equals("NY")).map(line => (line(0), line)))
       .map(l => 1).reduce((a,b) => a + b)
 
     println(NYCount)
+
+    //8. Find five most busy airports in US during Jun 01 - Aug 31.
+    fa.join(a.map(l => (l(0), 0)))
+      .map(a => (a._1, 1)).reduceByKey((a,b) => a + b)
+      .sortBy(a => -a._2).take(5)
+      .foreach(l => println(l._1 + " = " + l._2))
   }
 }
