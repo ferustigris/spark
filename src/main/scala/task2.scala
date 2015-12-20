@@ -39,7 +39,19 @@ object task2 {
       println(line._2);
     })
 
+    //7. The total number of flights served in Jun 2007 by NYC
+    // (all airports, use join with Airports data). 
+    // How many stages in jobs where instanced for this query?
+    println("The total number of flights served in Jun 2007 by NYC")
+    val a = sc.textFile("airports.csv").map(line => line.replace("\"", "").split(","))
+    val NYCount = f.flatMap(line => {
+      List(
+        (line(16), line),
+        (line(17), line)
+      )
+    }).join(a.filter(line => line(3).equals("NY")).map(line => (line(0), line)))
+      .map(l => 1).reduce((a,b) => a + b)
 
-    println("Result:")
+    println(NYCount)
   }
 }
