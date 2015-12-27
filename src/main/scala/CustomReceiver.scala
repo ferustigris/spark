@@ -4,12 +4,15 @@ import org.apache.spark.streaming.receiver.Receiver
 import org.jnetpcap.Pcap
 import org.jnetpcap.packet.{PcapPacket, PcapPacketHandler}
 
-class CustomReceiver extends Receiver[String](StorageLevel.MEMORY_ONLY) with Logging {
+class CustomReceiver extends Receiver[Integer](StorageLevel.MEMORY_ONLY) with Logging {
   class PackHandler extends PcapPacketHandler[String] {
     override def nextPacket(pcapPacket: PcapPacket, t: String): Unit = {
-      Thread sleep(1000)
+      Thread sleep(500)
       println("==>")
-      store(pcapPacket.toString)
+      println(pcapPacket.getCaptureHeader.caplen())
+      println("=>")
+
+      store(pcapPacket.getCaptureHeader.caplen())
     }
   }
 
